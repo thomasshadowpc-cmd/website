@@ -189,7 +189,8 @@
             box-shadow: 0 0 25px var(--accent-glow);
         }
 
-        .gallery-item img {
+        .gallery-item img,
+        .gallery-item video {
             width: 100%;
             height: auto;
             display: block;
@@ -493,40 +494,31 @@
         </section>
 
         <!-- Showcase / Fonctionnement -->
+
         <section class="showcase" id="fonctionnement">
             <h3 data-i18n="showcase-title">ANATOMIE DU SYSTÈME</h3>
             <p class="subtitle" data-i18n="showcase-subtitle">Immersion technique au cœur des modules d'exécution d'AetherBypass.</p>
             
             <div class="gallery-grid">
+                <!-- Élément 1 -->
                 <div class="gallery-item">
                     <img src="capture1.png" alt="Détection d'appareils multi-marques">
+                    <video src="video1.mp4" controls autoplay loop muted></video>
                     <div class="gallery-caption">
                         <h4 data-i18n="card1-title">01. Reconnaissance Matérielle Native</h4>
                         <p data-i18n="card1-desc">Analyse agressive via les bus USB pour l'identification instantanée des constructeurs et des statuts de connexion en temps réel.</p>
                     </div>
                 </div>
 
+                <!-- Élément 2 -->
                 <div class="gallery-item">
                     <img src="capture2.png" alt="Modules de diagnostic Samsung">
+                    <video src="video2.mp4" controls autoplay loop muted></video>
                     <div class="gallery-caption">
                         <h4 data-i18n="card2-title">02. Bypass & Exploitation Android</h4>
                         <p data-i18n="card2-desc">Exécution ciblée des modules FRP Unlock, contournement de verrouillage d'écran et élévation de privilèges Root/Magisk avec logs ADB en direct.</p>
                     </div>
                 </div>
-
-                <div class="gallery-item">
-                    <img src="capture3.png" alt="Sélection de l'écosystème Apple">
-                    <div class="gallery-caption">
-                        <h4 data-i18n="card3-title">03. Isolation Écosystème iOS</h4>
-                        <p data-i18n="card3-desc">Bascule instantanée vers le noyau Apple pour une prise en charge chirurgicale des terminaux sécurisés.</p>
-                    </div>
-                </div>
-
-                <div class="gallery-item">
-                    <img src="capture4.png" alt="Modules de diagnostic Apple iOS">
-                    <div class="gallery-caption">
-                        <h4 data-i18n="card4-title">04. Contournements Avancés Apple</h4>
-                        <p data-i18n="card4-desc">Maîtrise totale des couches de sécurité iOS : Jailbreak, Bypass Lockscreen et contournement du bus mémoire iCloud.</p>
                     </div>
                 </div>
             </div>
@@ -595,7 +587,7 @@
             BTC: "bc1qumqhn7vd0ycvyqpm4h5254hshffsvlwlzun0pl",
             ETH: "0x6660fE7Eb667D3e15FE6b6c6e8fDFBEf8a450Ae9",
             SOL: "hEAGD6z6Db2DkFQ6DZfWVPBAESj48ezVJKPyAJW5wq7",
-            XMR: "888AetherBypassMoneroSecureVaultAddressPlaceholderXMR999" // Remplaçable si besoin
+            XMR: "888AetherBypassMoneroSecureVaultAddressPlaceholderXMR999"
         };
 
         let currentCrypto = 'BTC';
@@ -641,7 +633,7 @@
         function copyCryptoAddress() {
             const input = document.getElementById('crypto-address-input');
             input.select();
-            input.setSelectionRange(0, 99999); // Pour mobiles
+            input.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(input.value);
 
             const btn = document.getElementById('copyBtn');
@@ -735,7 +727,6 @@
             });
         }
 
-        // Initialisation au chargement de la page
         window.addEventListener('DOMContentLoaded', () => {
             initCryptoBox();
         });
