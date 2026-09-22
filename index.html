@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AetherBypass - Logiciel de Diagnostic Avancé</title>
+    <!-- Importation de QRCode.js pour générer dynamiquement les QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-dark: #07070A;
@@ -33,7 +35,7 @@
             scroll-behavior: smooth;
         }
 
-        /* En-tête agressif & Logo agrandi */
+        /* En-tête */
         header {
             display: flex;
             justify-content: space-between;
@@ -79,7 +81,7 @@
 
         nav {
             display: flex;
-            gap: 25px;
+            gap: 20px;
         }
 
         nav a {
@@ -87,7 +89,7 @@
             text-decoration: none;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 1px;
             transition: all 0.3s ease;
         }
@@ -97,7 +99,6 @@
             text-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* Bouton de langue */
         .lang-btn {
             background-color: var(--bg-card);
             border: 1px solid var(--border-glow);
@@ -117,7 +118,7 @@
             transform: translateY(-2px);
         }
 
-        /* Section Hero percutante */
+        /* Section Hero */
         .hero {
             display: flex;
             flex-direction: column;
@@ -145,9 +146,9 @@
             margin-bottom: 40px;
         }
 
-        /* Grille des captures d'écran (Showcase) */
+        /* Showcase / Fonctionnement */
         .showcase {
-            padding: 80px 20px;
+            padding: 90px 20px;
             max-width: 1250px;
             margin: 0 auto;
         }
@@ -211,7 +212,7 @@
             font-size: 1rem;
         }
 
-        /* Section Paiement / Checkout Professionnelle */
+        /* Section Paiement / Checkout */
         .checkout-section {
             padding: 90px 20px;
             background: linear-gradient(180deg, var(--bg-dark) 0%, #0B0B12 100%);
@@ -300,37 +301,69 @@
         .crypto-option:hover, .crypto-option.selected {
             border-color: var(--accent-bright);
             color: var(--text-primary);
-            background-color: rgba(139, 92, 246, 0.1);
+            background-color: rgba(139, 92, 246, 0.2);
         }
 
-        /* Section Tarifs / Licence */
-        .pricing-section {
-            padding: 90px 20px;
+        /* Boîte de détails de paiement crypto (QR code + Adresse + Copie) */
+        .crypto-details-box {
             background-color: var(--bg-dark);
-            border-bottom: 1px solid var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
-        .price-card {
-            background-color: var(--bg-card);
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 50px;
-            border-radius: 20px;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        .crypto-details-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
         }
 
-        .price-card h3 {
-            font-size: 2rem;
-            font-weight: 800;
+        #qrcode-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .price-tag {
-            font-size: 3.5rem;
-            font-weight: 900;
-            color: var(--text-primary);
-            margin: 20px 0 10px 0;
+        .address-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .address-row input {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background-color: #0B0B10;
+            color: var(--accent-bright);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-copy {
+            background-color: var(--accent-mauve);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--accent-bright);
         }
 
         .btn {
@@ -368,7 +401,7 @@
             box-shadow: 0 0 35px var(--accent-glow);
         }
 
-        /* Section Contact & Histoire Activiste */
+        /* Section Contact & Origines */
         .contact-section {
             padding: 90px 20px;
             max-width: 900px;
@@ -445,7 +478,6 @@
             <nav>
                 <a href="#fonctionnement" data-i18n="nav-func">Fonctionnement</a>
                 <a href="#paiement" data-i18n="nav-pay">Paiement</a>
-                <a href="#buy" data-i18n="nav-buy">Licence</a>
                 <a href="#contact" data-i18n="nav-contact">Contact & Origines</a>
             </nav>
             <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
@@ -506,7 +538,7 @@
                 <h3 data-i18n="checkout-title">COMMANDER VOTRE LICENCE</h3>
                 <div class="price-display">189.00 €</div>
                 
-                <form onsubmit="event.preventDefault(); alert('Redirection vers la passerelle de paiement sécurisée...');">
+                <form onsubmit="event.preventDefault(); alert('Vérification du paiement en cours sur la blockchain...');">
                     <div class="form-group">
                         <label for="client-email" data-i18n="form-email-label">Votre Adresse E-mail (pour recevoir le lien de téléchargement)</label>
                         <input type="email" id="client-email" placeholder="technicien@domaine.com" required>
@@ -515,30 +547,29 @@
                     <div class="form-group">
                         <label data-i18n="form-crypto-label">Sélectionner la Cryptomonnaie de Paiement</label>
                         <div class="crypto-selector">
-                            <div class="crypto-option selected" onclick="selectCrypto(this)">Bitcoin (BTC)</div>
-                            <div class="crypto-option" onclick="selectCrypto(this)">Ethereum (ETH)</div>
-                            <div class="crypto-option" onclick="selectCrypto(this)">Solana (SOL)</div>
-                            <div class="crypto-option" onclick="selectCrypto(this)">Monero (XMR)</div>
+                            <div class="crypto-option selected" onclick="selectCrypto('BTC', this)">Bitcoin (BTC)</div>
+                            <div class="crypto-option" onclick="selectCrypto('ETH', this)">Ethereum (ETH)</div>
+                            <div class="crypto-option" onclick="selectCrypto('SOL', this)">Solana (SOL)</div>
+                            <div class="crypto-option" onclick="selectCrypto('XMR', this)">Monero (XMR)</div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" data-i18n="form-submit-btn">Procéder au Paiement Sécurisé</button>
+                    <!-- Bloc dynamique QR Code et Adresse -->
+                    <div class="crypto-details-box">
+                        <p data-i18n="crypto-scan-text">Scannez le QR code ou copiez l'adresse ci-dessous :</p>
+                        <div id="qrcode-container"></div>
+                        <div class="address-row">
+                            <input type="text" id="crypto-address-input" readonly>
+                            <button type="button" class="btn-copy" id="copyBtn" onclick="copyCryptoAddress()" data-i18n="btn-copy">Copier</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="form-submit-btn">J'ai effectué le paiement</button>
                 </form>
             </div>
         </section>
 
-        <!-- Section Tarifs / Rappel -->
-        <section class="pricing-section" id="buy">
-            <div class="price-card">
-                <h3 data-i18n="price-title">ACCÈS GLOBAL AETHERBYPASS</h3>
-                <p style="color: var(--text-secondary); margin-top: 10px;" data-i18n="price-sub">Licence permanente. Zéro compromis. Mises à jour incluses.</p>
-                <div class="price-tag">189.00 €</div>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 25px;" data-i18n="price-crypto">Transactions cryptographiques sécurisées et anonymisées</p>
-                <a href="#paiement" class="btn btn-primary" data-i18n="price-btn">Accéder au module de paiement</a>
-            </div>
-        </section>
-
-        <!-- Section Contact & Histoire Activiste -->
+        <!-- Section Contact & Origines -->
         <section class="contact-section" id="contact">
             <h3 data-i18n="contact-main-title">CONTACT & ORIGINES DU PROJET</h3>
             
@@ -558,18 +589,73 @@
         <p data-i18n="footer-text">&copy; 2026 AETHERBYPASS COLLECTIVE. TOUS DROITS RÉSERVÉS. BEYOND LIMITS.</p>
     </footer>
 
-    <!-- Script de Traduction & Gestion du Paiement -->
+    <!-- Script de Traduction, Gestion Crypto, QR Code & Copie -->
     <script>
-        function selectCrypto(element) {
+        const cryptoData = {
+            BTC: "bc1qumqhn7vd0ycvyqpm4h5254hshffsvlwlzun0pl",
+            ETH: "0x6660fE7Eb667D3e15FE6b6c6e8fDFBEf8a450Ae9",
+            SOL: "hEAGD6z6Db2DkFQ6DZfWVPBAESj48ezVJKPyAJW5wq7",
+            XMR: "888AetherBypassMoneroSecureVaultAddressPlaceholderXMR999" // Remplaçable si besoin
+        };
+
+        let currentCrypto = 'BTC';
+        let qrCodeInstance = null;
+
+        function initCryptoBox() {
+            const input = document.getElementById('crypto-address-input');
+            input.value = cryptoData[currentCrypto];
+
+            const container = document.getElementById('qrcode-container');
+            container.innerHTML = "";
+            qrCodeInstance = new QRCode(container, {
+                text: cryptoData[currentCrypto],
+                width: 140,
+                height: 140,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function selectCrypto(cryptoKey, element) {
             document.querySelectorAll('.crypto-option').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
+            currentCrypto = cryptoKey;
+
+            const input = document.getElementById('crypto-address-input');
+            input.value = cryptoData[cryptoKey];
+
+            if (qrCodeInstance) {
+                document.getElementById('qrcode-container').innerHTML = "";
+                qrCodeInstance = new QRCode(document.getElementById('qrcode-container'), {
+                    text: cryptoData[cryptoKey],
+                    width: 140,
+                    height: 140,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        }
+
+        function copyCryptoAddress() {
+            const input = document.getElementById('crypto-address-input');
+            input.select();
+            input.setSelectionRange(0, 99999); // Pour mobiles
+            navigator.clipboard.writeText(input.value);
+
+            const btn = document.getElementById('copyBtn');
+            const originalText = btn.innerText;
+            btn.innerText = currentLang === 'fr' ? 'Copié !' : 'Copied!';
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
         }
 
         const translations = {
             fr: {
                 "nav-func": "Fonctionnement",
                 "nav-pay": "Paiement",
-                "nav-buy": "Licence",
                 "nav-contact": "Contact & Origines",
                 "hero-title": "LE DIAGNOSTIC MOBILE SANS LIMITES",
                 "hero-desc": "Contournement de sécurité de pointe, analyse matérielle USB native et ingénierie agressive pour infrastructures Android & iOS.",
@@ -587,11 +673,9 @@
                 "checkout-title": "COMMANDER VOTRE LICENCE",
                 "form-email-label": "Votre Adresse E-mail (pour recevoir le lien de téléchargement)",
                 "form-crypto-label": "Sélectionner la Cryptomonnaie de Paiement",
-                "form-submit-btn": "Procéder au Paiement Sécurisé",
-                "price-title": "ACCÈS GLOBAL AETHERBYPASS",
-                "price-sub": "Licence permanente. Zéro compromis. Mises à jour incluses.",
-                "price-crypto": "Transactions cryptographiques sécurisées et anonymisées",
-                "price-btn": "Accéder au module de paiement",
+                "crypto-scan-text": "Scannez le QR code ou copiez l'adresse ci-dessous :",
+                "btn-copy": "Copier",
+                "form-submit-btn": "J'ai effectué le paiement",
                 "contact-main-title": "CONTACT & ORIGINES DU PROJET",
                 "lore-title": "Derrière le rideau : Qui a forgé AetherBypass ?",
                 "lore-p1": "Né dans l'ombre au début de l'année 2025, AetherBypass n'est pas le fruit d'une grande entreprise technologique aseptisée. C'est l'œuvre radicale d'un commando de <strong>4 ingénieurs dissidents et activistes de la vie numérique</strong>, lassés de voir la souveraineté sur nos propres appareils confisquée par les fabricants.",
@@ -604,7 +688,6 @@
             en: {
                 "nav-func": "Functionality",
                 "nav-pay": "Checkout",
-                "nav-buy": "License",
                 "nav-contact": "Contact & Origins",
                 "hero-title": "UNLIMITED MOBILE DIAGNOSTICS",
                 "hero-desc": "Cutting-edge security bypass, native USB hardware analysis, and aggressive engineering for Android & iOS infrastructures.",
@@ -622,11 +705,9 @@
                 "checkout-title": "ORDER YOUR LICENSE",
                 "form-email-label": "Your Email Address (to receive your download link)",
                 "form-crypto-label": "Select Payment Cryptocurrency",
-                "form-submit-btn": "Proceed to Secure Payment",
-                "price-title": "AETHERBYPASS GLOBAL ACCESS",
-                "price-sub": "Permanent license. Zero compromises. Updates included.",
-                "price-crypto": "Secure and anonymized cryptographic transactions",
-                "price-btn": "Go to Payment Module",
+                "crypto-scan-text": "Scan the QR code or copy the address below:",
+                "btn-copy": "Copy",
+                "form-submit-btn": "I have completed the payment",
                 "contact-main-title": "CONTACT & PROJECT ORIGINS",
                 "lore-title": "Behind the Curtain: Who forged AetherBypass?",
                 "lore-p1": "Born in the shadows at the beginning of 2025, AetherBypass is not the product of a sanitized major tech corporation. It is the radical work of a commando of <strong>4 dissident engineers and digital rights activists</strong>, tired of seeing sovereignty over our own devices confiscated by manufacturers.",
@@ -653,6 +734,11 @@
                 }
             });
         }
+
+        // Initialisation au chargement de la page
+        window.addEventListener('DOMContentLoaded', () => {
+            initCryptoBox();
+        });
     </script>
 </body>
 </html>
