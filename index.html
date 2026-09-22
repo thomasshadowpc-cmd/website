@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="fr" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherBypass - Logiciel de Diagnostic Avancé</title>
+    <!-- Importation de QRCode.js pour générer dynamiquement les QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #07070A;
+            --bg-card: #12121B;
+            --bg-card-hover: #191926;
+            --accent-mauve: #8B5CF6;
+            --accent-bright: #A855F7;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border-color: #2E2E42;
+            --border-glow: #7C3AED;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* En-tête */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #0B0B10;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 12px;
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        .logo-container h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--accent-bright) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-bright);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .lang-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+            text-transform: uppercase;
+        }
+
+        .lang-btn:hover {
+            background-color: var(--accent-mauve);
+            transform: translateY(-2px);
+        }
+
+        /* Section Hero */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 100px 20px 60px 20px;
+            background: radial-gradient(circle at top, #1E103C 0%, var(--bg-dark) 70%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h2 {
+            font-size: 3.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #FFFFFF, var(--accent-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        /* Showcase / Fonctionnement */
+        .showcase {
+            padding: 90px 20px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .showcase h3 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .showcase p.subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+            gap: 35px;
+        }
+
+        .gallery-item {
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-glow);
+            box-shadow: 0 0 25px var(--accent-glow);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .gallery-caption {
+            padding: 25px;
+        }
+
+        .gallery-caption h4 {
+            color: var(--accent-bright);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .gallery-caption p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Section Paiement / Checkout */
+        .checkout-section {
+            padding: 90px 20px;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0B0B12 100%);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .checkout-container {
+            background-color: var(--bg-card);
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 45px;
+            border-radius: 20px;
+            border: 2px solid var(--border-glow);
+            box-shadow: 0 0 35px var(--accent-glow);
+            text-align: left;
+        }
+
+        .checkout-container h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .checkout-container .price-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-align: center;
+            margin: 15px 0 25px 0;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-bright);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .crypto-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .crypto-option {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .crypto-option:hover, .crypto-option.selected {
+            border-color: var(--accent-bright);
+            color: var(--text-primary);
+            background-color: rgba(139, 92, 246, 0.2);
+        }
+
+        /* Boîte de détails de paiement crypto (QR code + Adresse + Copie) */
+        .crypto-details-box {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .crypto-details-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        #qrcode-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .address-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .address-row input {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background-color: #0B0B10;
+            color: var(--accent-bright);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-copy {
+            background-color: var(--accent-mauve);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--accent-bright);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-mauve), var(--accent-bright));
+            color: #fff;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            box-shadow: 0 0 25px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7C3AED, #9333EA);
+            box-shadow: 0 0 35px var(--accent-glow);
+        }
+
+        /* Section Contact & Origines */
+        .contact-section {
+            padding: 90px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-section h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .lore-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--accent-bright);
+            padding: 35px;
+            border-radius: 12px;
+            text-align: left;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .lore-box h4 {
+            color: var(--accent-bright);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .lore-box p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .lore-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 2px solid var(--border-color);
+            background-color: #0B0B10;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            header {
+                padding: 15px 20px;
+            }
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="Logoapp.png" alt="AetherBypass Logo">
+            <h1>AETHERBYPASS</h1>
+        </div>
+        <div class="nav-right">
+            <nav>
+                <a href="#fonctionnement" data-i18n="nav-func">Fonctionnement</a>
+                <a href="#paiement" data-i18n="nav-pay">Paiement</a>
+                <a href="#contact" data-i18n="nav-contact">Contact & Origines</a>
+            </nav>
+            <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2 data-i18n="hero-title">LE DIAGNOSTIC MOBILE SANS LIMITES</h2>
+            <p data-i18n="hero-desc">Contournement de sécurité de pointe, analyse matérielle USB native et ingénierie agressive pour infrastructures Android & iOS.</p>
+            <a href="#paiement" class="btn btn-primary" style="width: auto;" data-i18n="hero-btn">Déployer la licence</a>
+        </section>
+
+        <!-- Showcase / Fonctionnement -->
+
+        <section class="showcase" id="fonctionnement">
+            <h3 data-i18n="showcase-title">ANATOMIE DU SYSTÈME</h3>
+            <p class="subtitle" data-i18n="showcase-subtitle">Immersion technique au cœur des modules d'exécution d'AetherBypass.</p>
+            
+            <div class="gallery-grid">
+                <!-- Élément 1 -->
+                <div class="gallery-item">
+                    <img src="capture1.png" alt="Détection d'appareils multi-marques">
+                    <video src="video1.mp4" controls autoplay loop muted></video>
+                    <div class="gallery-caption">
+                        <h4 data-i18n="card1-title">01. Reconnaissance Matérielle Native</h4>
+                        <p data-i18n="card1-desc">Analyse agressive via les bus USB pour l'identification instantanée des constructeurs et des statuts de connexion en temps réel.</p>
+                    </div>
+                </div>
+
+                <!-- Élément 2 -->
+                <div class="gallery-item">
+                    <img src="capture2.png" alt="Modules de diagnostic Samsung">
+                    <video src="video2.mp4" controls autoplay loop muted></video>
+                    <div class="gallery-caption">
+                        <h4 data-i18n="card2-title">02. Bypass & Exploitation Android</h4>
+                        <p data-i18n="card2-desc">Exécution ciblée des modules FRP Unlock, contournement de verrouillage d'écran et élévation de privilèges Root/Magisk avec logs ADB en direct.</p>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Paiement Professionnelle (Checkout) -->
+        <section class="checkout-section" id="paiement">
+            <div class="checkout-container">
+                <h3 data-i18n="checkout-title">COMMANDER VOTRE LICENCE</h3>
+                <div class="price-display">189.00 €</div>
+                
+                <form onsubmit="event.preventDefault(); alert('Vérification du paiement en cours sur la blockchain...');">
+                    <div class="form-group">
+                        <label for="client-email" data-i18n="form-email-label">Votre Adresse E-mail (pour recevoir le lien de téléchargement)</label>
+                        <input type="email" id="client-email" placeholder="technicien@domaine.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="form-crypto-label">Sélectionner la Cryptomonnaie de Paiement</label>
+                        <div class="crypto-selector">
+                            <div class="crypto-option selected" onclick="selectCrypto('BTC', this)">Bitcoin (BTC)</div>
+                            <div class="crypto-option" onclick="selectCrypto('ETH', this)">Ethereum (ETH)</div>
+                            <div class="crypto-option" onclick="selectCrypto('SOL', this)">Solana (SOL)</div>
+                            <div class="crypto-option" onclick="selectCrypto('XMR', this)">Monero (XMR)</div>
+                        </div>
+                    </div>
+
+                    <!-- Bloc dynamique QR Code et Adresse -->
+                    <div class="crypto-details-box">
+                        <p data-i18n="crypto-scan-text">Scannez le QR code ou copiez l'adresse ci-dessous :</p>
+                        <div id="qrcode-container"></div>
+                        <div class="address-row">
+                            <input type="text" id="crypto-address-input" readonly>
+                            <button type="button" class="btn-copy" id="copyBtn" onclick="copyCryptoAddress()" data-i18n="btn-copy">Copier</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-i18n="form-submit-btn">J'ai effectué le paiement</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Section Contact & Origines -->
+        <section class="contact-section" id="contact">
+            <h3 data-i18n="contact-main-title">CONTACT & ORIGINES DU PROJET</h3>
+            
+            <div class="lore-box">
+                <h4 data-i18n="lore-title">Derrière le rideau : Qui a forgé AetherBypass ?</h4>
+                <p data-i18n="lore-p1">Né dans l'ombre au début de l'année 2025, AetherBypass n'est pas le fruit d'une grande entreprise technologique aseptisée. C'est l'œuvre radicale d'un commando de <strong>4 ingénieurs dissidents et activistes de la vie numérique</strong>, lassés de voir la souveraineté sur nos propres appareils confisquée par les fabricants.</p>
+                <p data-i18n="lore-p2">Réunis dans un espace de coworking clandestin, les fondateurs ont combiné leurs expertises en rétro-ingénierie des protocoles USB, en sécurité mobile et en ergonomie logicielle sombre. Leur mission initiale ? Briser les barrières logicielles arbitraires et redonner aux techniciens indépendants un contrôle absolu sur le matériel.</p>
+                <p data-i18n="lore-p3">Aujourd'hui, le collectif opère en marge des circuits traditionnels, garantissant une indépendance totale, une résistance accrue aux pressions et un chiffrement absolu des données de diagnostic.</p>
+            </div>
+
+            <p style="color: var(--text-secondary); margin-bottom: 25px;" data-i18n="contact-sub">Une question technique, un partenariat ou un besoin d'assistance chiffrée ? Contactez directement la cellule centrale.</p>
+            <a href="mailto:contact@aetherbypass.com" class="btn btn-primary" style="width: auto;" data-i18n="contact-btn">Établir le contact sécurisé</a>
+        </section>
+    </main>
+
+    <footer>
+        <p data-i18n="footer-text">&copy; 2026 AETHERBYPASS COLLECTIVE. TOUS DROITS RÉSERVÉS. BEYOND LIMITS.</p>
+    </footer>
+
+    <!-- Script de Traduction, Gestion Crypto, QR Code & Copie -->
+    <script>
+        const cryptoData = {
+            BTC: "bc1qumqhn7vd0ycvyqpm4h5254hshffsvlwlzun0pl",
+            ETH: "0x6660fE7Eb667D3e15FE6b6c6e8fDFBEf8a450Ae9",
+            SOL: "hEAGD6z6Db2DkFQ6DZfWVPBAESj48ezVJKPyAJW5wq7",
+            XMR: "888AetherBypassMoneroSecureVaultAddressPlaceholderXMR999"
+        };
+
+        let currentCrypto = 'BTC';
+        let qrCodeInstance = null;
+
+        function initCryptoBox() {
+            const input = document.getElementById('crypto-address-input');
+            input.value = cryptoData[currentCrypto];
+
+            const container = document.getElementById('qrcode-container');
+            container.innerHTML = "";
+            qrCodeInstance = new QRCode(container, {
+                text: cryptoData[currentCrypto],
+                width: 140,
+                height: 140,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function selectCrypto(cryptoKey, element) {
+            document.querySelectorAll('.crypto-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            currentCrypto = cryptoKey;
+
+            const input = document.getElementById('crypto-address-input');
+            input.value = cryptoData[cryptoKey];
+
+            if (qrCodeInstance) {
+                document.getElementById('qrcode-container').innerHTML = "";
+                qrCodeInstance = new QRCode(document.getElementById('qrcode-container'), {
+                    text: cryptoData[cryptoKey],
+                    width: 140,
+                    height: 140,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        }
+
+        function copyCryptoAddress() {
+            const input = document.getElementById('crypto-address-input');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value);
+
+            const btn = document.getElementById('copyBtn');
+            const originalText = btn.innerText;
+            btn.innerText = currentLang === 'fr' ? 'Copié !' : 'Copied!';
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
+        }
+
+        const translations = {
+            fr: {
+                "nav-func": "Fonctionnement",
+                "nav-pay": "Paiement",
+                "nav-contact": "Contact & Origines",
+                "hero-title": "LE DIAGNOSTIC MOBILE SANS LIMITES",
+                "hero-desc": "Contournement de sécurité de pointe, analyse matérielle USB native et ingénierie agressive pour infrastructures Android & iOS.",
+                "hero-btn": "Déployer la licence",
+                "showcase-title": "ANATOMIE DU SYSTÈME",
+                "showcase-subtitle": "Immersion technique au cœur des modules d'exécution d'AetherBypass.",
+                "card1-title": "01. Reconnaissance Matérielle Native",
+                "card1-desc": "Analyse agressive via les bus USB pour l'identification instantanée des constructeurs et des statuts de connexion en temps réel.",
+                "card2-title": "02. Bypass & Exploitation Android",
+                "card2-desc": "Exécution ciblée des modules FRP Unlock, contournement de verrouillage d'écran et élévation de privilèges Root/Magisk avec logs ADB en direct.",
+                "card3-title": "03. Isolation Écosystème iOS",
+                "card3-desc": "Bascule instantanée vers le noyau Apple pour une prise en charge chirurgicale des terminaux sécurisés.",
+                "card4-title": "04. Contournements Avancés Apple",
+                "card4-desc": "Maîtrise totale des couches de sécurité iOS : Jailbreak, Bypass Lockscreen et contournement du bus mémoire iCloud.",
+                "checkout-title": "COMMANDER VOTRE LICENCE",
+                "form-email-label": "Votre Adresse E-mail (pour recevoir le lien de téléchargement)",
+                "form-crypto-label": "Sélectionner la Cryptomonnaie de Paiement",
+                "crypto-scan-text": "Scannez le QR code ou copiez l'adresse ci-dessous :",
+                "btn-copy": "Copier",
+                "form-submit-btn": "J'ai effectué le paiement",
+                "contact-main-title": "CONTACT & ORIGINES DU PROJET",
+                "lore-title": "Derrière le rideau : Qui a forgé AetherBypass ?",
+                "lore-p1": "Né dans l'ombre au début de l'année 2025, AetherBypass n'est pas le fruit d'une grande entreprise technologique aseptisée. C'est l'œuvre radicale d'un commando de <strong>4 ingénieurs dissidents et activistes de la vie numérique</strong>, lassés de voir la souveraineté sur nos propres appareils confisquée par les fabricants.",
+                "lore-p2": "Réunis dans un espace de coworking clandestin, les fondateurs ont combiné leurs expertises en rétro-ingénierie des protocoles USB, en sécurité mobile et en ergonomie logicielle sombre. Leur mission initiale ? Briser les barrières logicielles arbitraires et redonner aux techniciens indépendants un contrôle absolu sur le matériel.",
+                "lore-p3": "Aujourd'hui, le collectif opère en marge des circuits traditionnels, garantissant une indépendance totale, une résistance accrue aux pressions et un chiffrement absolu des données de diagnostic.",
+                "contact-sub": "Une question technique, un partenariat ou un besoin d'assistance chiffrée ? Contactez directement la cellule centrale.",
+                "contact-btn": "Établir le contact sécurisé",
+                "footer-text": "&copy; 2026 AETHERBYPASS COLLECTIVE. TOUS DROITS RÉSERVÉS. BEYOND LIMITS."
+            },
+            en: {
+                "nav-func": "Functionality",
+                "nav-pay": "Checkout",
+                "nav-contact": "Contact & Origins",
+                "hero-title": "UNLIMITED MOBILE DIAGNOSTICS",
+                "hero-desc": "Cutting-edge security bypass, native USB hardware analysis, and aggressive engineering for Android & iOS infrastructures.",
+                "hero-btn": "Deploy License",
+                "showcase-title": "SYSTEM ANATOMY",
+                "showcase-subtitle": "Technical immersion into the core execution modules of AetherBypass.",
+                "card1-title": "01. Native Hardware Recognition",
+                "card1-desc": "Aggressive USB bus scanning for instant manufacturer identification and real-time connection status monitoring.",
+                "card2-title": "02. Android Bypass & Exploitation",
+                "card2-desc": "Targeted execution of FRP Unlock modules, screen lock bypass, and Root/Magisk privilege escalation with live ADB logs.",
+                "card3-title": "03. iOS Ecosystem Isolation",
+                "card3-desc": "Instant switch to the Apple kernel for surgical management of secure terminals.",
+                "card4-title": "04. Advanced Apple Bypasses",
+                "card4-desc": "Total mastery of iOS security layers: Jailbreak, Lockscreen Bypass, and iCloud memory bus control.",
+                "checkout-title": "ORDER YOUR LICENSE",
+                "form-email-label": "Your Email Address (to receive your download link)",
+                "form-crypto-label": "Select Payment Cryptocurrency",
+                "crypto-scan-text": "Scan the QR code or copy the address below:",
+                "btn-copy": "Copy",
+                "form-submit-btn": "I have completed the payment",
+                "contact-main-title": "CONTACT & PROJECT ORIGINS",
+                "lore-title": "Behind the Curtain: Who forged AetherBypass?",
+                "lore-p1": "Born in the shadows at the beginning of 2025, AetherBypass is not the product of a sanitized major tech corporation. It is the radical work of a commando of <strong>4 dissident engineers and digital rights activists</strong>, tired of seeing sovereignty over our own devices confiscated by manufacturers.",
+                "lore-p2": "Gathered in a clandestine coworking space, the founders combined their expertise in USB protocol reverse engineering, mobile security, and dark UI ergonomics. Their initial mission? Break arbitrary software barriers and restore absolute hardware control to independent technicians.",
+                "lore-p3": "Today, the collective operates outside traditional circuits, guaranteeing total independence, increased resistance to pressure, and absolute encryption of diagnostic data.",
+                "contact-sub": "A technical question, a partnership, or a need for encrypted assistance? Contact the central cell directly.",
+                "contact-btn": "Establish Secure Contact",
+                "footer-text": "&copy; 2026 AETHERBYPASS COLLECTIVE. ALL RIGHTS RESERVED. BEYOND LIMITS."
+            }
+        };
+
+        let currentLang = 'fr';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            document.getElementById('langToggle').innerText = currentLang === 'fr' ? 'EN' : 'FR';
+            document.getElementById('html-root').setAttribute('lang', currentLang);
+
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCryptoBox();
+        });
+    </script>
+</body>
+</html>
